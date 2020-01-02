@@ -43,6 +43,11 @@ def _check_ahp_preference_matrix(name, p_m, kind, length):
     if width != height or width != length:
         raise AHPNonSquarePreferenceMatrixError(kind, name, length, width, height)
 
+def autofill_elements(p_m):
+    for i in range(len(p_m)):
+        for j in range(len(p_m[i])):
+            if p_m[i][j]<=0:
+                p_m[i][j]=1/p_m[j][i]
 
 def validate_model(model):
     """Validate the passed AHP model.
@@ -80,6 +85,7 @@ def validate_model(model):
     criteria_queue = Queue()
 
     criteria_p_m = preference_matrices.get('criteria')
+    autofill_elements(criteria_p_m)
     _check_ahp_preference_matrix(name='criteria', p_m=criteria_p_m, kind="criteria", length=len(criteria))
 
     for criterion in criteria:
@@ -95,12 +101,14 @@ def validate_model(model):
             _check_ahp_list('subCriteria:{}'.format(criterion), sub_criteria)
 
             p_m = preference_matrices.get('subCriteria:{}'.format(criterion))
+            autofill_elements(p_m)
             _check_ahp_preference_matrix(name=criterion, p_m=p_m, kind="subCriteria", length=len(sub_criteria))
 
             for sub_criterion in sub_criteria:
                 criteria_queue.put(sub_criterion)
         else:
             p_m = preference_matrices.get('alternatives:{}'.format(criterion))
+            autofill_elements(p_m)
             _check_ahp_preference_matrix(name=criterion, p_m=p_m, kind="alternatives", length=n_alternatives)
 
 

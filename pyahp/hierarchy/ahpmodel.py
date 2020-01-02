@@ -36,13 +36,24 @@ class AHPModel:
         Returns:
             Global priorities of the alternatives in the model, rounded to `decimals` positions if `round_results=True`.
         """
-        crit_pm = np.array(self.preference_matrices['criteria'])
-        crit_pr = self.solver.estimate(crit_pm)
+        self.crit_pm = np.array(self.preference_matrices['criteria'])
+        self.crit_pr = self.solver.estimate(self.crit_pm)
 
-        crit_attr_pr = [criterion.get_priorities() for criterion in self.criteria]
-        priorities = normalize_priorities(crit_attr_pr, crit_pr)
+        self.crit_attr_pr = [criterion.get_priorities() for criterion in self.criteria]
+        self.priorities = normalize_priorities(self.crit_attr_pr, self.crit_pr)
 
         if round_results:
-            return np.around(priorities, decimals=decimals)
+            return np.around(self.priorities, decimals=decimals)
 
-        return priorities
+        return self.priorities
+
+    def persist(self, persistance, level=0 ):
+        persistance.save("------------ criteria ---------------",key="LEVEL{}".format(level))
+        persistance.save( self.crit_pm , key="preference_matrices")
+        persistance.save( self.crit_pr , key="priority")
+        self.solver.persist( persistance, level+1)
+        #persistance.save("------------ subCriteria ---------------",key="LEVEL{}".format(level))
+        for criterion in self.criteria:
+            persistance.newline();
+            criterion.persist(persistance, level+1) 
+

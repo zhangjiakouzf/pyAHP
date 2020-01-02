@@ -43,12 +43,23 @@ class AHPCriterion:
         Returns:
             Priorities at current level, normalized if an internal node.
         """
-        p_m = np.array(self.preference_matrices[self.p_m_key])
-        sub_crit_pr = self.solver.estimate(p_m)
+        self.p_m = np.array(self.preference_matrices[self.p_m_key])
+        self.sub_crit_pr = self.solver.estimate(self.p_m)
 
         if self.leaf:
-            return sub_crit_pr
+            return self.sub_crit_pr
 
         criteria_pr = [criterion.get_priorities() for criterion in self.sub_criteria]
 
-        return normalize_priorities(criteria_pr, sub_crit_pr)
+        return normalize_priorities(criteria_pr, self.sub_crit_pr)
+
+    def persist(self, persistance, level ):
+        persistance.save("------------ {} ---------------".format(self.p_m_key) ,key="LEVEL{}".format(level), level=level)
+        persistance.save( np.array_str(self.p_m), key="{}:sub preference matric".format(self.p_m_key), level=level)
+        persistance.save( self.sub_crit_pr, key="{}:sub priority".format(self.p_m_key), level=level )
+        self.solver.persist(persistance, level+1)
+        if not self.leaf:
+            for criterion in self.sub_criteria:
+                persistance.newline();
+                criterion.persist(persistance, level+1)
+        

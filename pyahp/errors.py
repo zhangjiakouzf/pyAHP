@@ -77,3 +77,14 @@ class AHPMissingPreferenceMatrixError(AHPModelError):
 
     def __str__(self):
         return 'Missing \'{}\' preference matrix for \'{}\''.format(self.kind, self.name)
+
+class AHPConsistencyError(AHPModelError):
+    """Error for cases when the AHP model uses a method not implemented."""
+    def __init__(self, threshold, CI, RI, CR):
+        self.threshold = threshold
+        self.CI = CI
+        self.CR = CR
+        self.RI = RI
+
+    def __str__(self):
+        return 'Consistency Ratio check failed Threshold:{},CR:{},CI:{},RI:{}'.format(self.threshold, self.CR, self.CI, self.RI)

@@ -37,4 +37,4 @@ class Method(ABC):
                 if i == j:
                     assert matrix[i, j] == 1, "Preference should be 1 on the diagonal"
                 else:
-                    assert abs(1 - matrix[i, j]*matrix[j, i]) <= 0.011, "Failed consistency check for Reciprocal Matrix"
+                    assert abs(1 - matrix[i, j]*matrix[j, i]) <= 0.011, "Failed consistency check for Reciprocal Matrix,i:{},j:{},matrix[i,j]:{},matrix[j,i]:{}".format(i,j,matrix[i, j],matrix[j, i])

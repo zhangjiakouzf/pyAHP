@@ -9,6 +9,7 @@ import json
 
 from pyahp import parse
 from pyahp.errors import AHPModelError
+from pyahp.persistance import Persistance
 
 
 def parse_args():
@@ -57,6 +58,7 @@ def main():
             print('\tMethod: {}'.format(model['method']))
 
             print_priorities(model['alternatives'], ahp_model.get_priorities())
+            ahp_model.persist(Persistance())
 
         except Exception as err:
             print('\t[-] ERROR:{} {}'.format(err.__class__.__name__, err))
