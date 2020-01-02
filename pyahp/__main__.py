@@ -29,7 +29,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def print_priorities(alternatives, priorities):
+def print_priorities(persistance, alternatives, priorities):
     """Pretty print the alternatives and the priorities.
 
     Args:
@@ -38,7 +38,7 @@ def print_priorities(alternatives, priorities):
     """
     print('\tResults:')
     for idx, alternative in enumerate(alternatives):
-        print('\t\t{}: {}'.format(alternative, priorities[idx]))
+        persistance.save(key=alternative, value=priorities[idx])
 
 
 def main():
@@ -55,10 +55,10 @@ def main():
         print('[+] {}'.format(model.get('name', name)))
         try:
             ahp_model = parse(model)
-            print('\tMethod: {}'.format(model['method']))
-
-            print_priorities(model['alternatives'], ahp_model.get_priorities())
-            ahp_model.persist(Persistance())
+            p = Persistance()
+            p.save(key='Method:',value=model['method'])
+            print_priorities(p, model['alternatives'], ahp_model.get_priorities())
+            ahp_model.persist(p)
 
         except Exception as err:
             print('\t[-] ERROR:{} {}'.format(err.__class__.__name__, err))

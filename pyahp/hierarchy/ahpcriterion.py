@@ -55,7 +55,7 @@ class AHPCriterion:
 
     def persist(self, persistance, level ):
         persistance.save("------------ {} ---------------".format(self.p_m_key) ,key="LEVEL{}".format(level), level=level)
-        persistance.save( np.array_str(self.p_m), key="{}:sub preference matric".format(self.p_m_key), level=level)
+        persistance.save( self.p_m, key="{}:sub preference matric".format(self.p_m_key), level=level)
         persistance.save( self.sub_crit_pr, key="{}:sub priority".format(self.p_m_key), level=level )
         self.solver.persist(persistance, level+1)
         if not self.leaf:

@@ -6,7 +6,7 @@ This module contains the class implementing the eigenvalue priority estimation m
 
 import numpy as np
 from scipy.sparse.linalg import eigs
-
+from pyahp.errors import *
 from pyahp.methods import Method
 
 RANDOM_INDICES = [0, 0, 0.58, 0.9, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49, 1.51]
@@ -51,9 +51,6 @@ class ConsistencyRatio:
 class EigenvalueMethod(Method):
     """Eigenvalue based priority estimation method
     """
-    def __init__(self):
-        pass
-
     def estimate(self, preference_matrix):
         super()._check_matrix(preference_matrix)
         self.width = preference_matrix.shape[0]
